@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_sm"
+    app:cardBackgroundColor="@color/bg_panel"
+    app:cardCornerRadius="@dimen/corner_radius_md"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/line_divider"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_md"
+        android:gravity="center_vertical">
+
+        <View
+            android:id="@+id/status_indicator"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/circle_indicator" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/drone_id_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:textColor="@color/text_primary"
+                android:text="drone1" />
+
+            <TextView
+                android:id="@+id/drone_detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="12sp"
+                android:textColor="@color/text_muted"
+                android:text="模式:HOLD／電量:87%" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_item_takeoff"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textColor="@color/accent_cyan"
+            android:text="起飛" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_item_land"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textColor="@color/accent_amber"
+            android:text="降落" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

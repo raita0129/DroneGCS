@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="bg_primary">#0B0F14</color>
+    <color name="bg_panel">#12181F</color>
+    <color name="bg_panel_2">#161D25</color>
+    <color name="line_divider">#232B34</color>
+
+    <color name="text_primary">#E4E9ED</color>
+    <color name="text_muted">#8A96A3</color>
+    <color name="text_muted_2">#5C6874</color>
+
+    <color name="accent_amber">#F2A93B</color>
+    <color name="accent_cyan">#4FD1C5</color>
+    <color name="accent_red">#E0654F</color>
+    <color name="accent_green">#5FB878</color>
+
+    <color name="status_online">#4FD1C5</color>
+    <color name="status_stale">#5C6874</color>
+    <color name="status_error">#E0654F</color>
 </resources>

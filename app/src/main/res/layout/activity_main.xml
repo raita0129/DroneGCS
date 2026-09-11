@@ -1,19 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="@color/bg_primary">
 
+    <!-- 連線狀態列：崩潰恢復後的警告文字也顯示在這裡 -->
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/status_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md"
+        android:background="@color/bg_panel"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:fontFamily="monospace"
+        android:text="未連線" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 崩潰迴圈提示的手動確認按鈕，預設隱藏，僅在偵測到崩潰迴圈時顯示 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_acknowledge_crash"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_sm"
+        android:visibility="gone"
+        app:backgroundTint="@color/accent_red"
+        android:textColor="@color/text_primary"
+        android:text="已確認機隊狀態，恢復自動重連" />
+
+    <!-- 地圖區：佔剩餘空間的主體 -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 分隔線，明確區隔地圖與清單，不用陰影靠色塊區分即可 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_divider" />
+
+    <!-- 每台無人機的獨立狀態清單，各自可個別操作起飛/降落 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/drone_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/bg_primary"
+        android:clipToPadding="false"
+        android:padding="@dimen/spacing_sm" />
+
+    <!-- 次要功能列：外框樣式，視覺權重低於下方全機隊起降 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/bg_panel"
+        android:padding="@dimen/spacing_sm">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_import_config"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:strokeColor="@color/line_divider"
+            android:textColor="@color/text_muted"
+            android:text="匯入設定" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_start_formation"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:strokeColor="@color/accent_cyan"
+            android:textColor="@color/accent_cyan"
+            android:text="啟動隊形" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_stop_formation"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:strokeColor="@color/line_divider"
+            android:textColor="@color/text_muted"
+            android:text="停止隊形" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_export_log"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:strokeColor="@color/line_divider"
+            android:textColor="@color/text_muted"
+            android:text="匯出Log" />
+    </LinearLayout>
+
+    <!-- 全機隊起降：最主要的操作，用實心按鈕、飽和色，跟上面次要功能列明確區隔避免誤觸 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/bg_panel_2"
+        android:padding="@dimen/spacing_md">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_takeoff_all"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:backgroundTint="@color/accent_green"
+            android:textColor="@color/bg_primary"
+            android:textStyle="bold"
+            android:text="全部起飛" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_land_all"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_xs"
+            app:backgroundTint="@color/accent_amber"
+            android:textColor="@color/bg_primary"
+            android:textStyle="bold"
+            android:text="全部降落" />
+    </LinearLayout>
+
+</LinearLayout>
