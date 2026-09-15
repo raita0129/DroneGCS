@@ -13,13 +13,29 @@ import java.util.*;
 
 public class DroneFleetManager {
 
+    public interface OnConnectionFailedListener {
+        void onConnectionFailed(String droneId, String reason);
+    }
+
     private final Context context;
     private final Map<String, MavsdkServer> servers = new HashMap<>();
     private final Map<String, System> drones = new HashMap<>();
     private final Map<String, CustomMessageChannel> customChannels = new HashMap<>(); // v1.11新增
+    private OnConnectionFailedListener connectionFailedListener;
 
     public DroneFleetManager(Context context) {
         this.context = context;
+    }
+
+    public void setOnConnectionFailedListener(OnConnectionFailedListener listener) {
+        this.connectionFailedListener = listener;
+    }
+
+    private void notifyConnectionFailed(String droneId, String reason) {
+        Logger.e("FleetManager", droneId + " 連線失敗: " + reason);
+        if (connectionFailedListener != null) {
+            connectionFailedListener.onConnectionFailed(droneId, reason);
+        }
     }
 
     public void connect(ConnectionConfig config) {
@@ -29,10 +45,16 @@ public class DroneFleetManager {
                 Logger.w("FleetManager", id + " 已連線，略過重複連線請求");
                 return;
             }
+
             Logger.i("FleetManager", id + " 連線至: " + config.toMavsdkUrl());
 
-            MavsdkServer server = new MavsdkServer();
+            MavsdkServer server = new MavsdkServer(context);
             int port = server.run(config.toMavsdkUrl());
+            if (port == 0) {
+                server.destroy();
+                notifyConnectionFailed(id, "mavsdk_server啟動失敗，連線位址格式可能不受支援: " + config.toMavsdkUrl());
+                return;
+            }
             System drone = new System("localhost", port);
 
             servers.put(id, server);
@@ -41,7 +63,7 @@ public class DroneFleetManager {
 
             drone.getCore().getConnectionState().subscribe(
                     state -> Logger.i("FleetManager", id + " connected=" + state.getIsConnected()),
-                    err -> Logger.e("FleetManager", id + " connectionState發生錯誤: " + err.getMessage())
+                    err -> notifyConnectionFailed(id, "connectionState發生錯誤: " + err.getMessage())
             );
         });
     }
@@ -122,7 +144,7 @@ public class DroneFleetManager {
                             () -> Logger.i("FleetManager", droneId + " 已進入offboard模式"),
                             err -> Logger.e("FleetManager", droneId + " 進入offboard失敗: " + err.getMessage())
                     );
-        });
+        }, err -> Logger.e("FleetManager", droneId + " 取得目前位置失敗，無法進入offboard: " + err.getMessage()));
     }
 
     public void setPositionTarget(String droneId, PositionTarget target) {

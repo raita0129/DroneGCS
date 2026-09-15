@@ -71,7 +71,7 @@ public class DroneViewModel extends AndroidViewModel {
                                 }
                             }
                             staleFlags.setValue(stale);
-                        })
+                        }, error -> Logger.e("ViewModel", "資料新鮮度檢查發生錯誤: " + error.getMessage()))
         );
     }
 

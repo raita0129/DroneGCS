@@ -13,7 +13,7 @@ public class ConnectionConfig {
 
     public String toMavsdkUrl() {
         switch (mode) {
-            case UDP_LISTEN:  return "udp://:" + port;
+            case UDP_LISTEN:  return "udpin://:" + port;
             case UDP_CONNECT: return "udpout://" + host + ":" + port;
             case SERIAL:      return "serial://" + serialPath + ":" + port;
             default: throw new IllegalStateException("未知連線模式");

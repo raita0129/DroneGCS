@@ -48,13 +48,19 @@ public class GcsControlService extends Service {
         fleetManager = new DroneFleetManager(this);
         formationCoordinator = new SwarmFormationCoordinator(this, fleetManager);
 
+        fleetManager.setOnConnectionFailedListener((droneId, reason) ->
+                updateNotification(droneId + " 連線失敗"));
+
         fleetManager.observeAllStates()
                 .scan(new HashMap<String, DroneState>(), (map, state) -> {
                     HashMap<String, DroneState> updated = new HashMap<>(map);
                     updated.put(state.droneId, state);
                     return updated;
                 })
-                .subscribe(formationCoordinator::updateFleetState);
+                .subscribe(
+                        formationCoordinator::updateFleetState,
+                        err -> Logger.e("Service", "機隊狀態串流發生錯誤: " + err.getMessage())
+                );
     }
 
     @Override
